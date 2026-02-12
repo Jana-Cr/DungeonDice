@@ -1,4 +1,3 @@
-//
 //  ContentView.swift
 //  DungeonDice
 //
@@ -8,7 +7,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    enum Dice: Int{
+    enum Dice: Int, CaseIterable{
         case four = 4
         case six = 6
         case eight = 8
@@ -23,6 +22,7 @@ struct ContentView: View {
         
     }
     @State private var resultMessage = ""
+   
     
     var body: some View {
         VStack {
@@ -41,50 +41,18 @@ struct ContentView: View {
             
             Spacer()
             
-            Group {
-                HStack {
-                    Button("\(Dice.four.rawValue)-sided"){
-                        resultMessage = "You rolled a \(Dice.four.roll()) on a \(Dice.four.rawValue)-sided dice"
-                    }
-                    
-                    Spacer()
-                    
-                    Button("\(Dice.six.rawValue)-sided"){
-                        resultMessage = "You rolled a \(Dice.four.roll()) on a \(Dice.four.rawValue)-sided dice"
-                    }
-                    
-                    Spacer()
-                    
-                    Button("\(Dice.eight.rawValue)-sided"){
-                        resultMessage = "You rolled a \(Dice.four.roll()) on a \(Dice.four.rawValue)-sided dice"
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))]) {
+                ForEach(Dice.allCases, id: \.self) { dice in
+                    Button("\(dice.rawValue)-sided"){
+                        resultMessage = "You rolled a \(dice.roll()) on a \(dice.rawValue)-sided dice"
                     }
                 }
-                HStack {
-                    Button("\(Dice.ten.rawValue)-sided"){
-                        resultMessage = "You rolled a \(Dice.four.roll()) on a \(Dice.four.rawValue)-sided dice"
-                    }
-                    
-                    Spacer()
-                    
-                    Button("\(Dice.twelve.rawValue)-sided"){
-                        resultMessage = "You rolled a \(Dice.four.roll()) on a \(Dice.four.rawValue)-sided dice"
-                    }
-                    
-                    Spacer()
-                    
-                    Button("\(Dice.twenty.rawValue)-sided"){
-                        resultMessage = "You rolled a \(Dice.four.roll()) on a \(Dice.four.rawValue)-sided dice"
-                    }
-                    
-                    Button("\(Dice.hundred.rawValue)-sided"){
-                        resultMessage = "You rolled a \(Dice.four.roll()) on a \(Dice.four.rawValue)-sided dice"
-                    }
-           
-            }
-            
-        }
+
             .buttonStyle(.borderedProminent)
             .tint(.red)
+            }
+            
+                
     }
         
         .padding()
