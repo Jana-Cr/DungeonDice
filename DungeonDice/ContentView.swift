@@ -7,7 +7,9 @@
 import SwiftUI
 
 struct ContentView: View {
-    enum Dice: Int, CaseIterable{
+    enum Dice: Int, CaseIterable, Identifiable{
+       
+        
         case four = 4
         case six = 6
         case eight = 8
@@ -16,12 +18,21 @@ struct ContentView: View {
         case twenty = 20
         case hundred = 100
         
+        var id: Int {
+            return rawValue
+        }
+        
+        var description: String { "\(rawValue)-sided"}
+        
         func roll() -> Int{
             return Int.random(in: 1...self.rawValue)
         }
         
+        
     }
     @State private var resultMessage = ""
+    @State private var animationTrigger = false
+    @State private var isDoneAnimation = true
    
     
     var body: some View {
@@ -37,14 +48,24 @@ struct ContentView: View {
                 .font(.largeTitle)
                 .fontWeight(.medium)
                 .multilineTextAlignment(.center)
+//                .scaleEffect(isDoneAnimation ? 1.0 : 0.6)
+//                .opacity(isDoneAnimation ? 1.0 : 0.2)
+            rotation3DEffect(isDoneAnimation ? .degrees(360) : .degrees(0), axis: (x: 0, y: 0, z: 0))
                 .frame(height: 150)
+                .onChange(of: animationTrigger) {
+                    isDoneAnimation = false
+                    withAnimation(.interpolatingSpring(duration: 0.6, bounce: 0.4)) {
+                        isDoneAnimation = true
+                    }
+                }
             
             Spacer()
             
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))]) {
-                ForEach(Dice.allCases, id: \.self) { dice in
-                    Button("\(dice.rawValue)-sided"){
-                        resultMessage = "You rolled a \(dice.roll()) on a \(dice.rawValue)-sided dice"
+                ForEach(Dice.allCases) { dice in
+                    Button("\(dice.description)-sided"){
+                        resultMessage = "You rolled a \(dice.roll()) on a \(dice)-sided dice"
+                        animationTrigger.toggle()
                     }
                 }
 
